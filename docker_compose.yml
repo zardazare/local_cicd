@@ -1,0 +1,37 @@
+services:
+  jenkins:
+    container_name: jenkins_localhost
+    image: jenkins/jenkins:latest
+    restart: unless-stopped
+    ports:
+      - "36036:8080"
+    hostname: jenkins.localhost
+    networks:
+      - localhost_cicd_network
+    volumes:
+      - "TODO - Create directory and add path to mount jenkins_home:/var/jenkins_home"
+  gitlab:
+    container_name: gitlab_localhost
+    image: gitlab/gitlab-ce:latest
+    restart: unless-stopped
+    hostname: gitlab.localhost
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.localhost'
+    ports:
+      - "36037:80"
+      # - "8443:443"
+    volumes:
+      - "TODO - Create directory and add path to mount config:/etc/gitlab"
+      - "TODO - Create directory and add path to mount logs:/var/log/gitlab"
+      - "TODO - Create directory and add path to mount data:/var/opt/gitlab"
+    networks:
+      - localhost_cicd_network
+
+networks:
+  localhost_cicd_network:
+    name: localhost_cicd_network
+    driver: bridge
+
+#  docker-compose -f docker_compose.yml up -d --wait
+# To open service in browser with hostname add jenkins.localhost/gitlab.localhost to ../etc/hosts file (e.g. 127.0.0.1 jenkins.localhost)
